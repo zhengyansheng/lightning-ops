@@ -1,4 +1,4 @@
-# ops
+# lightning-ops
 
 ## 环境依赖
 
@@ -21,7 +21,7 @@
 
 
 ## 项目目录结构
-```bash
+```text
 $ tree -L 1
 .
 ├── LICENSE
@@ -52,9 +52,13 @@ $ git clone git@github.com:zhengyansheng/lightning-ops.git
 
 - 虚拟环境
 ```bash
-$ cd ops
+$ cd lightning-ops
 $ python3.6 -m venv .venv
 $ source .venv/bin/activate
+```
+
+```bash
+$ pip install --upgrade pip
 $ pip install -r requirements.txt
 ```
 
