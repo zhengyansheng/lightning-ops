@@ -7,6 +7,7 @@
 - Python 3.6+
 - Django 3.1+
 - MySQL 5.7+
+- Redis 3.2+
 
 
 ## 项目目录结构
