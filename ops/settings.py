@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import ldap
 import datetime
 from config.config import Config
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -49,12 +51,10 @@ INSTALLED_APPS = [
     "apps.service_tree.apps.ServiceTreeConfig",
     "apps.audit.apps.AuditConfig",
     "apps.tasks.apps.TasksConfig",
-    # "apps.cron.apps.CronConfig",
     "apps.permission.apps.PermissionConfig",
 
 
     # 第三方
-    # 'django_apscheduler',
     "rest_framework",
     "drf_yasg",
     "django_filters",
@@ -354,3 +354,40 @@ CELERY_ENABLE_UTC = False
 # Ansible
 ANSIBLE_HOSTS_PATH = "/etc/ansible/hosts/hosts"
 ANSIBLE_SCRIPT_PATH = "/data/tasks"
+
+
+# LDAP
+# https://github.com/django-auth-ldap/django-auth-ldap
+# LDAP 服务地址
+AUTH_LDAP_SERVER_URI = "ldap://{}:{}".format(Config.LDAP_SERVER_URI, Config.LDAP_SERVER_PORT)
+
+# 需要使用这个去验证其他用户名的准确性 cn=admin,ou=staff,dc=nucarf,dc=cn
+AUTH_LDAP_BIND_DN = Config.AUTH_LDAP_BIND_DN
+AUTH_LDAP_BIND_PASSWORD = Config.AUTH_LDAP_BIND_PASSWORD
+
+# 允许认证用户的路径 cn=admin,ou=staff,dc=nucarf,dc=cn
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    Config.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, "(cn=%(user)s)"  # 邮箱登录 指定ou下的用户
+)
+
+# 当ldap用户登录时，从ldap的用户属性对应写到django的user数据库，键为django的属性，值为ldap用户的属性
+AUTH_LDAP_USER_ATTR_MAP = {
+    "username": "cn",
+    "name": "displayName",
+    "email": "email",
+}
+
+# 如果为True，则每次用户登录时，将使用LDAP目录中的最新值来更新用户对象的字段。
+# 否则，仅在自动创建用户对象时填充该用户对象。
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+# Cache distinguished names and group memberships for an hour to minimize
+# LDAP traffic.
+AUTH_LDAP_CACHE_TIMEOUT = 3600
+
+# Keep ModelBackend around for per-user permissions and maybe a local
+# superuser.
+AUTHENTICATION_BACKENDS = (
+    "django_auth_ldap.backend.LDAPBackend",  # 优先使用ldap进行用户验证
+    "django.contrib.auth.backends.ModelBackend",
+)

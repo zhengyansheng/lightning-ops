@@ -302,3 +302,4 @@ celerybeat.pid
 ./tests/*
 data/*
 docs/*
+tests/*

@@ -41,7 +41,17 @@ from apps.tasks.router import router as tasks_router
 from apps.service_tree.router import router as service_tree_router
 from apps.permission.router import router as permission_router
 from apps.cmdb.router import router as cmdb_router
-# from apps.cron.router import router as cron_router
+
+# apps urls
+from apps.user import urls as user_url
+from apps.service_tree import urls as service_tree_url
+from apps.permission import urls as permission_url
+from apps.tasks import urls as tasks_urls
+
+# DOCS
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
 router = routers.DefaultRouter()
 router.registry.extend(user_router.registry)
@@ -56,30 +66,24 @@ urlpatterns += [
     path('api/', include(router.urls)),
 ]
 
-# apps urls
-from apps.user import urls as user_url
-from apps.service_tree import urls as service_tree_url
-from apps.permission import urls as permission_url
-from apps.tasks import urls as tasks_urls
+API_URLS = []
+API_URLS.extend(user_url.urlpatterns)
+API_URLS.extend(tasks_urls.urlpatterns)
+API_URLS.extend(service_tree_url.urlpatterns)
+API_URLS.extend(permission_url.urlpatterns)
+API_URLS.extend(router.urls)
+
 urlpatterns += [
-    path('api/', include(router.urls)),
-    path('api/', include(user_url)),
-    path('api/', include(tasks_urls)),
-    path('api/', include(service_tree_url)),
-    path('api/', include(permission_url)),
+    path('api/', include(API_URLS)),
 ]
 
-# DOCS
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
-        title="Ops API",
+        title="Lightning-ops API",
         default_version='v1',
         description="Document description",
         terms_of_service="http://www.aiops724.com/",
-        contact=openapi.Contact(email="monkey@ops.com"),
+        contact=openapi.Contact(email="zhengyansheng@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
@@ -91,8 +95,3 @@ urlpatterns += [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
-
-
-
-
-
