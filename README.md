@@ -87,3 +87,30 @@ redirect_stderr=true
 stdout_logfile=/opt/lightning-ops/logs/supervisor.log
 startsecs=0
 ```
+
+- systemd支持
+
+```
+cat >/usr/lib/systemd/system/lightning-ops.service<<\EOF
+[Unit]
+Description='The lightning-ops server'
+After=network.target
+
+[Service]
+Type=forking
+PrivateTmp=true
+Restart=on-failure
+PIDFile=/run/gunicorn.pid
+ExecStart=/opt/lightning-ops/.venv/bin/gunicorn -c /opt/lightning-ops/config/gunicorn.conf.py ops.wsgi:application --pid /run/gunicorn.pid
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable lightning-ops
+systemctl restart lightning-ops
+systemctl status lightning-ops
+```
