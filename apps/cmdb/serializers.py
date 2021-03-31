@@ -7,7 +7,7 @@ from .models import CMDBBase
 
 region_id_map = {
     "ali": {
-
+        "cn-beijing": "北京",
     },
     "ten": {
         "ap-beijing": "北京",
@@ -18,7 +18,7 @@ region_id_map = {
 
 zone_id_map = {
     "ali": {
-
+        "c": "三区",
     },
     "ten": {
         '1': "一区",
