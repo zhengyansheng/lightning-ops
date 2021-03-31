@@ -74,3 +74,16 @@ $ make run
 ```bash
 $ ./start.sh
 ```
+
+- supervisor
+
+```bash
+[program:lightning-ops]
+directory=/opt/lightning-ops
+command=/opt/lightning-ops/.venv/bin/gunicorn ops.wsgi:application -b 0.0.0.0:9000 -w 4 -k gthread
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/opt/lightning-ops/logs/supervisor.log
+startsecs=0
+```
