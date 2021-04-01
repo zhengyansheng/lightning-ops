@@ -243,6 +243,13 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
                 qs = qs.filter(private_ip=private_ip_v)
         return qs
 
+    def destroy(self, request, *args, **kwargs):
+        ins = self.get_object()
+        # 不允许跨层级删除
+        if not ins.is_leaf_node():
+            return json_api_response(code=-1, data=None, message="不允许跨层级删除.")
+        return super(ServiceTreeModelViewSet, self).destroy(request, *args, **kwargs)
+
 
 class NodeOperaPermissionModelViewSet(BaseModelViewSet):
     """服务树 关联节点操作权限"""
