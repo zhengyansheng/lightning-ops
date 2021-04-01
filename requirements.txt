@@ -34,6 +34,7 @@ djangorestframework==3.12.2
 djangorestframework-csv==2.1.0
 djangorestframework-datatables==0.5.2
 djangorestframework-jwt==1.11.0
+drf-extensions==0.7.0
 drf-yasg==1.20.0
 Faker==6.0.0
 fernet==1.0.1

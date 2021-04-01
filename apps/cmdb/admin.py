@@ -15,8 +15,8 @@ class CMDBBaseAdmin(admin.ModelAdmin):
         "cpu_total",
         "mem_total",
         "state",
-        "region_name",
-        "zone_name",
+        "region_id",
+        "zone_id",
         "type",
     )
 

@@ -182,9 +182,9 @@ REST_FRAMEWORK = {
     # 自定义异常
     'EXCEPTION_HANDLER': 'base.exceptions.custom_exception_handler',
     # 配置后端搜索
-    "DEFAULT_FILTER_BACKENDS": {
-        'django_filters.rest_framework.DjangoFilterBackend',
-    },
+    # "DEFAULT_FILTER_BACKENDS": {
+    #     'django_filters.rest_framework.DjangoFilterBackend',
+    # },
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
 }
 
@@ -391,3 +391,8 @@ AUTHENTICATION_BACKENDS = (
     "django_auth_ldap.backend.LDAPBackend",  # 优先使用ldap进行用户验证
     "django.contrib.auth.backends.ModelBackend",
 )
+
+# drf-extensions
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_BULK_OPERATION_HEADER_NAME': 'X-CUSTOM-BULK-OPERATION'
+}

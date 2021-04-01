@@ -5,6 +5,8 @@ from .permissions import ApiRBACPermission
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
+from rest_framework import mixins
+from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework import status
 from rest_framework.response import Response
@@ -22,12 +24,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.renderers import AdminRenderer
 from rest_framework.renderers import BrowsableAPIRenderer
 from rest_framework_csv.renderers import CSVRenderer
+from rest_framework_extensions.mixins import ListUpdateModelMixin
 
+from base.mixins import BulkUpdateModelMixin
 
 __all__ = (
-    "BaseModelViewSet",
     "BaseApiView",
+    "BaseModelViewSet",
     "TreeModelViewSet",
+    "CustomListUpdateModelMixin",
+    "BaseGenericAPIView",
 )
 
 
@@ -36,6 +42,15 @@ def valid_field_required(field_array, data_map):
     for field in field_array:
         if field not in data_map:
             raise ParseError(f"{field} is required.")
+
+
+
+class CustomListUpdateModelMixin(ListUpdateModelMixin):
+    def put(self, request, *args, **kwargs):
+        if self.is_object_operation():
+            return super().partial_update(request, *args, **kwargs)
+        else:
+            return self.partial_update_bulk(request, *args, **kwargs)
 
 
 class BaseModelViewSet(ModelViewSet):
@@ -70,6 +85,30 @@ class BaseModelViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         response = super(BaseModelViewSet, self).retrieve(request, *args, **kwargs)
         return json_ok_response(response.data)
+
+
+class BaseGenericAPIView(GenericAPIView):
+    """
+        GenericAPIView视图类
+    """
+    authentication_classes = [SessionAuthentication, JSONWebTokenAuthentication]
+    permission_classes = [IsAuthenticated, ]
+
+    def put(self, request, *args, **kwargs):
+        return self.bulk_update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_bulk_update(request, *args, **kwargs)
+
+    def partial_bulk_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.bulk_update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_bulk_update(self, serializer):
+        return self.perform_update(serializer)
 
 
 class BaseApiView(APIView):

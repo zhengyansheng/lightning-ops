@@ -1,7 +1,4 @@
-import json
-
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from .models import CMDBBase
 
@@ -32,45 +29,52 @@ zone_id_map = {
 }
 
 
+class CMDBBulkListSerializer(serializers.ListSerializer):
+
+    def update(self, instance, validated_data):
+        # Maps for id->instance and id->data item.
+        instance_mapping = {ins.private_ip: ins for ins in instance}
+        data_mapping = {item['private_ip']: item for item in validated_data}
+
+        # Perform creations and updates.
+        ret = []
+        for pk, data in data_mapping.items():
+            obj = instance_mapping.get(pk, None)
+            if obj:
+                ret.append(self.child.update(obj, data))
+            else:
+                ret.append(self.child.create(data))
+
+        return ret
+
+    def example_update(self, instance, validated_data):
+        # Maps for id->instance and id->data item.
+        instance_mapping = {ins.private_ip: ins for ins in instance}
+        data_mapping = {item['private_ip']: item for item in validated_data}
+
+        # Perform creations and updates.
+        ret = []
+        for pk, data in data_mapping.items():
+            obj = instance_mapping.get(pk, None)
+            if obj is None:
+                ret.append(self.child.create(data))
+            else:
+                ret.append(self.child.update(obj, data))
+
+        # Perform deletions.
+        for pk, ins in instance_mapping.items():
+            if pk not in data_mapping:
+                ins.delete()
+
+        return ret
+
+    def to_internal_value(self, data):
+        return data
+
+
 class CMDBBaseModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CMDBBase
         fields = "__all__"
-        depth = 1
-
-    def to_representation(self, instance):
-        response = super(CMDBBaseModelSerializer, self).to_representation(instance)
-        response['state'] = dict(self.Meta.model.CHOICE_STATE)[response['state']]
-        response['type'] = dict(self.Meta.model.CHOICE_TYPE)[response['type']]
-        response['platform'] = dict(self.Meta.model.CHOICE_PLATFORM)[response['platform']]
-        return response
-
-    def to_internal_value(self, data):
-        data = self.replace_region_zone_name(data)
-        data = self.replace_type_platform_state(data)
-        print(json.dumps(data, indent=4))
-        return super(CMDBBaseModelSerializer, self).to_internal_value(data)
-
-    def replace_region_zone_name(self, data):
-        """ 自动生成 region and zone name"""
-        if data['type'] == "cloud":
-            region_platform_dic = region_id_map[data['platform']]
-            zone_platform_dic = zone_id_map[data['platform']]
-            data['region_name'] = region_platform_dic[data['region_id']]
-            data['zone_name'] = region_platform_dic[data['region_id']] + zone_platform_dic[data['zone_id'][-1]]
-        return data
-
-    def replace_type_platform_state(self, data):
-        """映射 state | platform | type 字母到数字的映射"""
-        state_dic = {x[1]: int(x[0]) for x in self.Meta.model.CHOICE_STATE}
-        platform_dic = {x[1]: int(x[0]) for x in self.Meta.model.CHOICE_PLATFORM}
-        type_dic = {x[1]: int(x[0]) for x in self.Meta.model.CHOICE_TYPE}
-
-        # 验证
-        if data['state'] not in state_dic or data['platform'] not in platform_dic or data['type'] not in type_dic:
-            raise ValidationError("xxx")
-
-        data['state'] = state_dic[data['state']]
-        data['platform'] = platform_dic[data['platform']]
-        data['type'] = type_dic[data['type']]
-        return data
+        depth = 2
+        list_serializer_class = CMDBBulkListSerializer

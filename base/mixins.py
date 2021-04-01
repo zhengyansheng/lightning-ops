@@ -1,7 +1,6 @@
-import datetime
-import logging
 import xlrd
 import tablib
+import datetime
 from django.http import HttpResponse
 from django.conf import settings
 from rest_framework.decorators import action
@@ -11,7 +10,6 @@ from rest_framework.response import Response
 from rest_framework.mixins import CreateModelMixin
 from base.response import json_api_response
 
-logger = logging.getLogger('views')
 
 
 class BulkCreateModelMixin(CreateModelMixin):
@@ -39,6 +37,53 @@ class BulkCreateModelMixin(CreateModelMixin):
 
     def perform_bulk_create(self, serializer):
         return self.perform_create(serializer)
+
+
+class BulkUpdateModelMixin(object):
+    """
+    Update model instances in bulk by using the Serializers
+    ``many=True`` ability from Django REST >= 2.2.5.
+    """
+
+    def get_object(self):
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        if lookup_url_kwarg in self.kwargs:
+            return super(BulkUpdateModelMixin, self).get_object()
+
+        # If the lookup_url_kwarg is not present
+        # get_object() is most likely called as part of options()
+        # which by default simply checks for object permissions
+        # and raises permission denied if necessary.
+        # Here we don't need to check for general permissions
+        # and can simply return None since general permissions
+        # are checked in initial() which always gets executed
+        # before any of the API actions (e.g. create, update, etc)
+        return
+
+    def bulk_update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+
+        # restrict the update to the filtered queryset
+        serializer = self.get_serializer(
+            self.filter_queryset(self.get_queryset()),
+            data=request.data,
+            many=True,
+            partial=partial,
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_bulk_update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def partial_bulk_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.bulk_update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_bulk_update(self, serializer):
+        return self.perform_update(serializer)
 
 
 class TreeListMixin(object):
