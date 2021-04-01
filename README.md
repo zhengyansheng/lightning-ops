@@ -52,6 +52,7 @@ $ git clone git@github.com:zhengyansheng/lightning-ops.git
 
 - 虚拟环境
 ```bash
+$ cd /opt/
 $ cd lightning-ops
 $ python3.6 -m venv .venv
 $ source .venv/bin/activate
@@ -60,6 +61,10 @@ $ source .venv/bin/activate
 ```bash
 $ pip install --upgrade pip
 $ pip install -r requirements.txt
+```
+
+```bash
+# yum install openldap-devel python-ldap
 ```
 
 - 同步数据库
@@ -88,7 +93,7 @@ stdout_logfile=/opt/lightning-ops/logs/supervisor.log
 startsecs=0
 ```
 
-- systemd支持
+- systemd 支持
 
 ```
 cat >/usr/lib/systemd/system/lightning-ops.service<<\EOF
@@ -108,9 +113,11 @@ ExecStop=/bin/kill -s TERM $MAINPID
 [Install]
 WantedBy=multi-user.target
 EOF
+```
 
-systemctl daemon-reload
-systemctl enable lightning-ops
-systemctl restart lightning-ops
-systemctl status lightning-ops
+```bash
+# systemctl daemon-reload
+# systemctl enable lightning-ops
+# systemctl restart lightning-ops
+# systemctl status lightning-ops
 ```
