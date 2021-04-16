@@ -317,10 +317,8 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
-            # headers = self.get_success_headers(serializer.data)
             return json_api_response(code=0, data=serializer.data, message=None)
         else:
-            print("data", serializer.data)
             try:
                 instance = self.queryset.get(node_id=serializer.data['node'])
             except NodeLinkServer.DoesNotExist:
@@ -330,7 +328,7 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
             s = self.get_serializer(instance, data=request.data, partial=partial)
             s.is_valid(raise_exception=True)
             instance.cmdbs.add(*serializer.data['cmdbs'])
-            return json_api_response(code=-1, data=serializer.data, message=None)
+            return json_api_response(code=0, data=serializer.data, message=None)
 
 
 class NodeLinkTagModelViewSet(BaseModelViewSet):
