@@ -60,9 +60,11 @@ INSTALLED_APPS = [
     "django_filters",
     "mptt",
     "corsheaders",
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -396,3 +398,8 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_BULK_OPERATION_HEADER_NAME': 'X-CUSTOM-BULK-OPERATION'
 }
+
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

@@ -20,6 +20,12 @@ class CMDBBaseAdmin(admin.ModelAdmin):
         "type",
     )
 
+    search_fields = (
+        'private_ip',
+        'instance_id',
+        "hostname"
+    )
+
 
 @admin.register(models.JoinCMDBBaseTag)
 class JoinTagAdmin(admin.ModelAdmin):
