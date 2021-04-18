@@ -69,7 +69,7 @@ class CMDBBase(BaseModel):
     account = models.CharField(max_length=50,  null=True, blank=True, verbose_name='云账号')
     root_id = models.CharField(max_length=100, null=True, blank=True, verbose_name='主账号ID')
 
-    start_time = models.CharField(max_length=100, default="0000-00-00 00:00:00", verbose_name='实例创建时间')
+    start_time = models.CharField(max_length=100, default="0000-00-00 00:00:00", verbose_name='实例启动时间')
     create_server_time = models.CharField(max_length=100, default="0000-00-00 00:00:00", verbose_name='实例创建时间')
     expired_time = models.CharField(max_length=32, null=True, blank=True, verbose_name='过期时间')
 

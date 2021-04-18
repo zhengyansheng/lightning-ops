@@ -30,7 +30,7 @@ CONFIG_DIR = os.path.join(ROOT_DIR, 'config')
 SECRET_KEY = '@yuwoez1o&oqwyt-1t%v$n5dc0iww0uo3)7^tg&0&z5e9_po5o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Config.DEBUG
 
 ALLOWED_HOSTS = ["*"]
 
