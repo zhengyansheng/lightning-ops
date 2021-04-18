@@ -314,7 +314,21 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
         """
         如果 node 不存在时，则添加，否则修改
         """
-        serializer = self.get_serializer(data=request.data)
+        if 'app_key' in request.data:
+
+            try:
+                node = self.queryset.get(node__appkey=request.data['app_key'])
+            except NodeLinkServer.DoesNotExist:
+                return json_api_response(code=-1, data=None, message="app_key not found.")
+
+            request_data = {
+                "node": node,
+                "cmdbs": request.data['cmdbs'],
+            }
+        else:
+            request_data = request.data
+
+        serializer = self.get_serializer(data=request_data)
         if serializer.is_valid():
             self.perform_create(serializer)
             return json_api_response(code=0, data=serializer.data, message=None)
@@ -325,7 +339,7 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
                 return json_api_response(code=-1, data=None, message=f"not found.")
 
             partial = kwargs.pop('partial', True)
-            s = self.get_serializer(instance, data=request.data, partial=partial)
+            s = self.get_serializer(instance, data=request_data, partial=partial)
             s.is_valid(raise_exception=True)
             instance.cmdbs.add(*serializer.data['cmdbs'])
             return json_api_response(code=0, data=serializer.data, message=None)

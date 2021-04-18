@@ -58,6 +58,6 @@ class ProductionConfig(Config):
 
 
 if os.environ.get("OPS_APP_ENV") == "release":
-    Config = ProductionConfig()
+    LightningOpsConfig = ProductionConfig()
 else:
-    Config = DevelopmentConfig()
+    LightningOpsConfig = DevelopmentConfig()
