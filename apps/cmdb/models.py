@@ -32,7 +32,7 @@ class CMDBBase(BaseModel):
 
     # common
     private_ip = models.GenericIPAddressField(unique=True, db_index=True, verbose_name="私有IP地址")
-    public_ip = models.CharField(null=True, blank=True, verbose_name="公网IP地址")
+    public_ip = models.CharField(max_length=100, null=True, blank=True, verbose_name="公网IP地址")
     eip_ip = models.CharField(max_length=100, null=True, blank=True, verbose_name="弹性IP地址")
     extra_private_ip = models.JSONField(default=JSONMulFieldDefault, null=True, blank=True, verbose_name='扩展私有IP')
     extra_public_ip = models.JSONField(default=JSONMulFieldDefault, null=True, blank=True, verbose_name='扩展公网IP')
