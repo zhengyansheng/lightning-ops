@@ -152,7 +152,7 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
         # for s in node_set:
         #     cmdb_pks.extend([_s.pk for _s in s.cmdbs.all()])
 
-        qs = CMDBBase.objects.filter(pk__in=cmdb_pks)
+        qs = CMDBBase.objects.filter(pk__in=cmdb_pks, is_deleted=False)
         qs = self.server_filter(qs, request.query_params)
         count = qs.count()
         if is_pagination:
@@ -322,7 +322,7 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
                 return json_api_response(code=-1, data=None, message="app_key not found.")
 
             request_data = {
-                "node": node,
+                "node": node.node_id,
                 "cmdbs": request.data['cmdbs'],
             }
         else:
@@ -336,7 +336,7 @@ class NodeLinkServerModelViewSet(BaseModelViewSet):
             try:
                 instance = self.queryset.get(node_id=serializer.data['node'])
             except NodeLinkServer.DoesNotExist:
-                return json_api_response(code=-1, data=None, message=f"not found.")
+                return json_api_response(code=-1, data=None, message="not found.")
 
             partial = kwargs.pop('partial', True)
             s = self.get_serializer(instance, data=request_data, partial=partial)
