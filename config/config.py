@@ -10,7 +10,7 @@ class Config(object):
     MYSQL_PORT = 3306
     MYSQL_USER = "root"
     MYSQL_PASSWORD = "12345678"
-    MYSQL_DB = "lightning-ops"
+    MYSQL_DB = "lightning-ops2"
     MYSQL_CHARSET = "utf8mb4"
     MYSQL_UNIX_SOCKET = ""
 

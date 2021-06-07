@@ -1,6 +1,6 @@
 from base.models import BaseModel
 from apps.user.models import UserProfile
-from apps.cmdb.models import CMDBBase
+from apps.cmdb.models import TableData
 
 from django.db import models
 from jsonfield import JSONField
@@ -96,7 +96,7 @@ class NodeLinkServer(BaseModel):
     """
     node = models.OneToOneField(to=ServiceTree, on_delete=models.CASCADE, verbose_name='节点')
     # node = models.ForeignKey(to=ServiceTree, on_delete=models.CASCADE, unique=True, verbose_name='节点')
-    cmdbs = models.ManyToManyField(to=CMDBBase, null=True, blank=True, related_name="link_server")
+    cmdbs = models.ManyToManyField(to=TableData, null=True, blank=True, related_name="link_server")
 
     class Meta:
         verbose_name = '节点关联主机'

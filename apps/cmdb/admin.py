@@ -1,37 +1,38 @@
 from django.contrib import admin
 
-
-from . import models
 # Register your models here.
+from . import models
 
 
-@admin.register(models.CMDBBase)
-class CMDBBaseAdmin(admin.ModelAdmin):
+# for table in models.__all__:
+#     admin.site.register(getattr(models,table))
+
+
+@admin.register(models.TableClassify)
+class TableClassifyAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
-        "private_ip",
-        "public_ip",
-        "hostname",
-        "cpu_total",
-        "mem_total",
-        "state",
-        "region_id",
-        "zone_id",
-        "type",
-    )
-
-    search_fields = (
-        'private_ip',
-        'instance_id',
-        "hostname"
+        "name",
+        "alias",
+        "pid",
+        "icon",
     )
 
 
-@admin.register(models.JoinCMDBBaseTag)
-class JoinTagAdmin(admin.ModelAdmin):
+@admin.register(models.TableField)
+class TableFieldAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
-        "cmdb",
-        "key",
-        "value",
+        "table_classify",
+        "fields",
+        "rules",
+    )
+
+
+@admin.register(models.TableData)
+class TableDataAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "table_classify",
+        "data",
     )
