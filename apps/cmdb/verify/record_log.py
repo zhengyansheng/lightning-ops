@@ -1,7 +1,6 @@
-from dictdiffer import diff
-
+from ..models import TableData, ChangeRecord
 from .operate import OperateInstance
-from ..models import ChangeRecord
+from dictdiffer import diff
 
 
 class Record:
@@ -26,11 +25,12 @@ class Record:
                     self.record_save(asset_r.parent_asset.id, title, msg, self.get_user())
 
     def relation(self):
-        title = f'新增记录-{self.child_asset.table_classify.name}'
+
         if self.parent_asset.table_classify.record_log:
             for k, v in self.child_asset.table_classify.fields.fields.items():
-                if 'guid' in v:
-                    msg = f'新增数据详情: {self.child_asset.data.get(k)}'
+                if v.get('guid'):
+                    msg = f'新增数据详情: {self.child_asset.data}'
+                    title = f'新增记录-{self.child_asset.table_classify.name}-{self.child_asset.data.get(k)}'
                     self.record_save(self.parent_asset.id, title, msg, self.get_user())
                     break
 
@@ -38,9 +38,11 @@ class Record:
         parent_asset = self.parent_asset.parent_asset
         child_asset = self.parent_asset.child_asset
         if parent_asset.table_classify.record_log:
-            title = f'移除记录-{child_asset.table_classify.name}'
+
             for k, v in child_asset.table_classify.fields.fields.items():
-                if 'guid' in v:
+                if v.get('guid'):
+                    title = f'移除记录-{child_asset.table_classify.name}-{child_asset.data[k]}'
+                    print(v)
                     msg = f'移除数据详情: {child_asset.data}'
                     self.record_save(parent_asset.id, title, msg, self.get_user())
                     break
@@ -128,3 +130,4 @@ def record(func, parent_asset, child_asset, request):
 # }
 #
 # record('run', x, y)
+

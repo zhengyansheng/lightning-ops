@@ -20,7 +20,6 @@ class CheckField:
         if len(fields) != len(rules):
             raise KeyError('The number of fields and the number of rules do not match')
         for fk, fv in fields.items():
-            print(fk, fv)
             name = fv.get('name')
             order = fv.get('order')
             if not isinstance(name, str) or not isinstance(order, int):
@@ -79,13 +78,10 @@ class CheckField:
         for fk, fv in fields.items():
             if fv.get('guid'):
                 count += 1
-                if rules[fk].get('unique'):
-                    pass
-                else:
-                    raise KeyError(f'filed: {fk} Is a globally unique identity,rules must have (unique=True)')
         if count != 1:
             raise KeyError('No globally unique identifiers exist or multiple globally unique identifiers appear')
 
 
 def check_field(data):
     return CheckField().start(data)
+

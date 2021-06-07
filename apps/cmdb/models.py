@@ -16,7 +16,7 @@ class TableBaseModel(BaseModel):
 class TableClassify(TableBaseModel):
     # 分类表
     name = models.CharField(max_length=32, unique=True, verbose_name='名称')
-    alias = models.CharField(max_length=32, unique=True, verbose_name='别名')
+    alias = models.CharField(max_length=32, unique=True, verbose_name='别名', null=True, blank=True)
     pid = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, verbose_name='父Id')
     icon = models.ImageField(upload_to="cmdb/icon/%Y/%m/%d/", blank=True, null=True)
     record_log = models.BooleanField(default=False, verbose_name='是否记录日志')
