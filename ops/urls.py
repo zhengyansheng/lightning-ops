@@ -54,6 +54,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from django.conf import settings
+from django.views.static import serve
 router = routers.DefaultRouter()
 router.registry.extend(user_router.registry)
 router.registry.extend(audit_router.registry)
@@ -75,6 +77,7 @@ API_URLS.extend(permission_url.urlpatterns)
 API_URLS.extend(router.urls)
 
 urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     path('api/', include(API_URLS)),
 ]
 

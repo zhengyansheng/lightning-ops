@@ -4,8 +4,11 @@ from ..serializers import ChangeRecordSerializer
 
 
 class ChangeRecordViewSet(BaseModelViewSet):
-    queryset = ChangeRecord.objects.filter().order_by('-id')
+    queryset = ChangeRecord.objects.filter().order_by("-id")
     serializer_class = ChangeRecordSerializer
-    ordering_fields = ('id', 'title',)
-    filter_fields = ('id', 'title', 'table_data_id')
-    search_fields = ('title', 'title')
+    ordering_fields = (
+        "id",
+        "title",
+    )
+    filter_fields = ("id", "title", "table_data_id")
+    search_fields = ("title", "title")

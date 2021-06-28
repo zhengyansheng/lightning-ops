@@ -6,14 +6,8 @@ from base.models import BaseModel
 __all__ = ['TableClassify', 'TableField', 'TableData', 'TableRelation', 'AssetsRelation']
 
 
-class TableBaseModel(BaseModel):
-    is_deleted = models.BooleanField(default=False, verbose_name='已删除')
 
-    class Meta:
-        abstract = True
-
-
-class TableClassify(TableBaseModel):
+class TableClassify(BaseModel):
     # 分类表
     name = models.CharField(max_length=32, unique=True, verbose_name='名称')
     alias = models.CharField(max_length=32, unique=True, verbose_name='别名', null=True, blank=True)
@@ -30,7 +24,7 @@ class TableClassify(TableBaseModel):
         verbose_name_plural = verbose_name
 
 
-class TableField(TableBaseModel):
+class TableField(BaseModel):
     # 表字段 和 验证规则
     table_classify = models.OneToOneField(to=TableClassify, on_delete=models.CASCADE, verbose_name='关联Classify',
                                           related_name='fields')
@@ -46,11 +40,11 @@ class TableField(TableBaseModel):
         verbose_name_plural = verbose_name
 
 
-class TableData(TableBaseModel):
+class TableData(BaseModel):
     # 表数据
     table_classify = models.ForeignKey(to=TableClassify, on_delete=models.CASCADE, verbose_name='关联Classify')
     data = models.JSONField(default=dict, verbose_name='数据值')
-
+    is_forbid_bind = models.BooleanField(default=False, verbose_name='是否允许绑定')
     def __str__(self):
         return f'{self.pk}'
 
@@ -59,7 +53,7 @@ class TableData(TableBaseModel):
         verbose_name_plural = verbose_name
 
 
-class TableRelation(TableBaseModel):
+class TableRelation(BaseModel):
     # 两表之间的关联关系 ForeignKey or OneToOne
     parent_table = models.ForeignKey(to=TableClassify, on_delete=models.CASCADE, related_name='parent',
                                      verbose_name='主表ID')
@@ -73,7 +67,7 @@ class TableRelation(TableBaseModel):
         verbose_name_plural = verbose_name
 
 
-class AssetsRelation(TableBaseModel):
+class AssetsRelation(BaseModel):
     # 资产关系对应表
     parent_asset = models.ForeignKey(to=TableData, on_delete=models.CASCADE, related_name='parent',
                                      verbose_name='主记录ID')
@@ -87,7 +81,7 @@ class AssetsRelation(TableBaseModel):
         verbose_name_plural = verbose_name
 
 
-class ChangeRecord(TableBaseModel):
+class ChangeRecord(BaseModel):
     # 资产变更记录表
     table_data = models.ForeignKey(to=TableData, on_delete=models.CASCADE, related_name='record', verbose_name='关联资产数据')
     title = models.CharField(max_length=64, verbose_name='变更字段名称')

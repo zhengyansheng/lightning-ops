@@ -403,3 +403,6 @@ REST_FRAMEWORK_EXTENSIONS = {
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'upload')  # 注意此处不要写成列表或元组的形式
+# 配置 MEDIA_URL 作为公用 URL，指向上传文件的基本路径
+MEDIA_URL = '/media/'
