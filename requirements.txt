@@ -90,6 +90,7 @@ virtualenv==20.0.18
 virtualenv-clone==0.5.4
 wcwidth==0.2.5
 xlrd==2.0.1
+xpinyin==0.7.6
 zipp==3.1.0
 zmail==0.2.8
 zope.event==4.5.0

@@ -29,7 +29,8 @@ class TableClassifyViewSet(BaseModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        data = json.loads(json.dumps(request.data))
+        data = request.data
+        # data = json.loads(json.dumps(request.data))
         pid = data.get("pid")
         # 判断是否存在PID
         if pid:

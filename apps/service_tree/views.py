@@ -41,7 +41,7 @@ class ServiceTreeModelViewSet(BulkCreateModelMixin, BaseModelViewSet):
     def get_queryset(self):
         queryset = super(ServiceTreeModelViewSet, self).get_queryset()
         u = self.request.user
-        if u.username == "admin":
+        if u.username in ["admin", "root"]:
             return queryset
         
         node_pks = []
