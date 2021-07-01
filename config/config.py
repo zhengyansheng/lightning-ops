@@ -3,6 +3,7 @@ import os
 
 class Config(object):
     """Base config class."""
+
     DEBUG = True
 
     # MYSQL Default
@@ -35,11 +36,22 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     """Development config class."""
+
     DEBUG = True
+
+    # MYSQL Default
+    MYSQL_HOST = "www.aiops724.com"
+    MYSQL_PORT = 3306
+    MYSQL_USER = "lightning_user"
+    MYSQL_PASSWORD = "12345678"
+    MYSQL_DB = "lightning"
+    MYSQL_CHARSET = "utf8mb4"
+    MYSQL_UNIX_SOCKET = ""
 
 
 class ProductionConfig(Config):
     """Production config class."""
+
     DEBUG = False
 
     # MYSQL Default

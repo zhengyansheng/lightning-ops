@@ -8,19 +8,20 @@ class EventAuditMiddleware(MiddlewareMixin):
     """
     HTTP请求审计
     """
+
     RequestId = None
 
     def process_request(self, request):
         """接收请求"""
         data = {
-            'url': request.META['PATH_INFO'],
-            'method': request.META['REQUEST_METHOD'],
-            'query_string': request.META['QUERY_STRING'],
-            'remote_ip': request.environ['REMOTE_ADDR'],
-            "username": request.user
+            "url": request.META["PATH_INFO"],
+            "method": request.META["REQUEST_METHOD"],
+            "query_string": request.META["QUERY_STRING"],
+            "remote_ip": request.environ["REMOTE_ADDR"],
+            "username": request.user,
         }
 
-        if request.META['REQUEST_METHOD'] in ["POST", "PUT"]:
+        if request.META["REQUEST_METHOD"] in ["POST", "PUT"]:
             try:
                 body = json.loads(request.body)
             except Exception as e:
@@ -28,7 +29,7 @@ class EventAuditMiddleware(MiddlewareMixin):
                 body = ""
         else:
             body = ""
-        data['body'] = body
+        data["body"] = body
         request = AuditLog.objects.create(**data)
         self.RequestId = request.pk
 

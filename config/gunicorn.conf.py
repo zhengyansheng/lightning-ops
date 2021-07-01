@@ -7,7 +7,7 @@ from logging.handlers import WatchedFileHandler
 
 # 绑定ip和端口号
 port = 9000
-bind = '0.0.0.0:{}'.format(port)
+bind = "0.0.0.0:{}".format(port)
 
 # 监听队列
 backlog = 512
@@ -27,7 +27,7 @@ timeout = 60
 daemon = True
 
 # 使用gevent模式，还可以使用sync 模式，默认的是sync模式
-worker_class = 'gevent'
+worker_class = "gevent"
 
 # 进程数
 workers = 2
@@ -37,7 +37,7 @@ workers = 2
 threads = 4
 
 # 日志级别，这个日志级别指的是错误日志的级别，而访问日志的级别无法设置
-loglevel = 'info'
+loglevel = "info"
 
 # 设置gunicorn访问日志格式，错误日志无法设置
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'

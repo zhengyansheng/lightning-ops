@@ -41,15 +41,15 @@ class NodeLinkServerAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
         "node",
-        "cmdbs_custom",
+        # "cmdbs_custom",
     )
 
-    filter_horizontal = ('cmdbs',)
+    # filter_horizontal = ('cmdbs',)
+    #
+    # def cmdbs_custom(self, obj):
+    #     return [m.hostname for m in obj.cmdbs.all()]
 
-    def cmdbs_custom(self, obj):
-        return [m.hostname for m in obj.cmdbs.all()]
-
-    cmdbs_custom.short_description = "Server标识"
+    # cmdbs_custom.short_description = "Server标识"
 
 
 @admin.register(NodeJoinTag)

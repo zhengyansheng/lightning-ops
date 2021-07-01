@@ -74,8 +74,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 自定义
+    # 自定义中间件
     "middleware.audit.EventAuditMiddleware",
+    "middleware.permission.DisabledDeleteMiddleware",
 ]
 
 ROOT_URLCONF = 'ops.urls'
